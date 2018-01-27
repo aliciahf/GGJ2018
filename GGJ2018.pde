@@ -4,8 +4,10 @@
 
 PFont font;
 Player player;
-Message message;
-String question = "Hello? Are you there?";
+
+String convo01[], convo02[], convo03[];
+int currentConvo = 1;
+
 int[] reply;
 Key[] keys;
 int keyCount = 6;
@@ -13,22 +15,24 @@ int[] values = {10, 20, 30, 40, 50, 60, 70};
 int[] keyIDs = {1, 2, 3, 4, 5, 6};
 int counter = 0;
 
-String levelName = "LevelOne";
-
 
 void setup() {
   //fullScreen();
   noCursor();
+  smooth();
   size(800,600);
   background(0,0,0);
   font = loadFont("Silkscreen.vlw");
   
-  player = new Player(width/2, height/2);
-  message = new Message(round(random(0, 2)), question);
+  convo01 = loadStrings("convo01.txt");
+  convo02 = loadStrings("convo02.txt");
+  convo03 = loadStrings("convo03.txt");
+  
   keys = new Key[keyCount];
   for (int i = 0; i < keyCount; i++) {
     keys[i] = new Key(keyIDs[i], i, values);
   }
+  player = new Player();
 }
 
 void draw() {
@@ -37,7 +41,32 @@ void draw() {
     keys[i].display();
     keys[i].detect(player.posX, player.posY);
   }
-  message.display();
+
+  //text display
+  fill(255);
+  textAlign(CENTER);
+  textFont(font, 16);
+
+  switch(currentConvo) {
+    case 1:
+      for (int i = 0; i < convo01.length; i++) {
+        text(convo01[i], width/2, 200 + 20*i);
+      }
+      break;
+    case 2:
+      for (int i = 0; i < convo02.length; i++) {
+        text(convo02[i], width/2, 200 + 20*i);
+      }
+      break;
+    case 3:
+      for (int i = 0; i < convo03.length; i++) {
+        text(convo03[i], width/2, 200 + 20*i);
+      }
+      break;
+    default:
+      println("ERROR: No more available convos.");
+      break;
+  }
   
   player.display();
   player.move();
@@ -50,23 +79,34 @@ void draw() {
 }
 
 void mousePressed() {
-  if (levelName == "LevelOne") {
-    for (int i = 0; i < keyCount; i++) {
-      if (keys[i].isInRange() && counter < 3) {
-        counter++;
-        keys[i].selectID = counter;
-      }
+  for (int i = 0; i < keyCount; i++) {
+    if (keys[i].isInRange() && counter < 3) {
+      counter++;
+      keys[i].selectID = counter;
     }
   }
 }
 
 void keyPressed() {
-  if (levelName == "LevelOne") {
-    if (key == 'r') {
-      for (int i = 0; i < keyCount; i++) {
-        keys[i].selectID = 0;
-        counter = 0;
-      }
+  if (key == 'r') {
+    //clear board
+    counter = 0;
+    for (int i = 0; i < keyCount; i++) {
+      keys[i].selectID = 0;
+    }
+  }
+  if (key == ENTER) {
+    //clear board
+    counter = 0;
+    for (int i = 0; i < keyCount; i++) {
+      keys[i].selectID = 0;
+    }
+    
+    //conversation progression
+    if (currentConvo < 3) {
+      currentConvo++;
+    } else {
+      currentConvo = 1;
     }
   }
 }

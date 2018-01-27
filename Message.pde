@@ -2,8 +2,7 @@ class Message {
   int roll;
   String messageText;
   
-  Message(int _roll, String _messageText) {
-    roll = _roll;
+  Message(String _messageText) {
     messageText = _messageText;
   }
   

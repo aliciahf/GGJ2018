@@ -11,10 +11,7 @@ class Player {
   int sizeY = 96;
   int speed = 5;
   
-  Player(float x, float y) {
-    posX = x;
-    posY = y;
-
+  Player() {
     //load idle frames
     for (int i = 0; i < idleFrames.length; i++) {
       idleFrames[i] = loadImage("images/player_idle_" + i + ".png");
