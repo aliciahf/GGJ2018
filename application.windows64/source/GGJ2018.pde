@@ -5,7 +5,7 @@
 import ddf.minim.*;
 
 PFont font;
-PImage icon_ghost, icon_player;
+PImage icon_ghost, icon_player, logo;
 PImage[] activeImages = new PImage[6];
 AudioPlayer select, cancel, submit, theme;
 Minim minim;
@@ -46,6 +46,7 @@ void setup() {
   font = createFont("PTM75F.ttf", 32);
   icon_ghost = loadImage("images/icon_cat.png");
   icon_player = loadImage("images/icon_frog.png");
+  logo = loadImage("images/logoGGJ18.png");
   minim = new Minim(this);
   select = minim.loadFile("audio/Switch1.mp3");
   cancel = minim.loadFile("audio/Cancel2.mp3");
@@ -143,10 +144,12 @@ void draw() {
 }
 
 void showStartScreen() {
+  imageMode(CENTER);
+  image(logo, width/2, height/2-180);
   fill(255);
   textAlign(CENTER);
   textFont(font, 32);
-  text("REACTIONARY", width/2, height/2-130); //rename
+  //text("REACTIONARY", width/2, height/2-130); //rename
   textFont(font, 16);
   text("You really like this person sooo much, and you think the feeling is mutual, \n" 
   +"so you want to ask them out to the RENAISSANCE FAIR this weekend.\n"
@@ -154,7 +157,7 @@ void showStartScreen() {
   +"and it's no longer working. \nIf you want to make your move, you'll have to " 
   +"communicate via...\n\n"
   +"REACTION IMAGES\n\n"
-  +"Good luck!", width/2, height/2-90);
+  +"Good luck!", width/2, height/2-60);
   
   fill(255,255,255,opacity);
   text("[ PRESS ANY KEY TO CONTINUE ]", width/2, height/2+200); //rename
