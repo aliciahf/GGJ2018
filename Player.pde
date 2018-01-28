@@ -19,6 +19,7 @@ class Player {
   }
   
   void display() {
+    noCursor();
     animatePlayer();
     imageMode(CENTER);
     image(current, posX, posY, sizeX, sizeY);
@@ -30,7 +31,6 @@ class Player {
       toNextFrame = frameRefill;
       currentFrame++;
     }
-    
     if (currentFrame > idleFrames.length-1) {
       currentFrame = 0;
     }

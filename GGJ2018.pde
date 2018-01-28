@@ -2,15 +2,20 @@
 // Ghost Ouija Computer
 // ** Player attempts to communicate with a ghost with a language barrier
 
+import ddf.minim.*;
+
 PFont font;
 PImage icon_ghost, icon_player;
 PImage[] activeImages = new PImage[6];
+AudioPlayer select, cancel, submit, theme;
+Minim minim;
 Player player;
 
 String convo01[], convo02[], convo03[], convo04[], convo05[], convo06[], convo07[], convo08[], 
 convo09[], convo10[], convo11[], convo12[], convo13[], convo14[], convo15[], convo16[],
 convo17[], convo18[], convo19[], convo20[], convo21[], convo22[], convo23[], convo24[],
 convo25[], convo26[], convo27[], convo28[], convo29[], convo30[]; //16
+String winText[], loseText[];
 int currentConvo = 1;
 int convoTotal = 30;
 
@@ -28,6 +33,8 @@ int state = startScreen;
 int scoreA = 0;
 int scoreX, scoreY, displayScore;
 
+int opacity = 100;
+
 void setup() {
   fullScreen();
   noCursor();
@@ -39,6 +46,12 @@ void setup() {
   font = createFont("PTM75F.ttf", 32);
   icon_ghost = loadImage("images/icon_cat.png");
   icon_player = loadImage("images/icon_frog.png");
+  minim = new Minim(this);
+  select = minim.loadFile("audio/Switch1.mp3");
+  cancel = minim.loadFile("audio/Cancel2.mp3");
+  submit = minim.loadFile("audio/Computer.mp3");
+  theme = minim.loadFile("audio/Komiku_Night_in_a_seashell_3.mp3");
+  theme.loop();
   
   convo01 = loadStrings("dialogue/convo01.txt");
   convo02 = loadStrings("dialogue/convo02.txt");
@@ -70,6 +83,9 @@ void setup() {
   convo28 = loadStrings("dialogue/convo28.txt");
   convo29 = loadStrings("dialogue/convo29.txt");
   convo30 = loadStrings("dialogue/convo30.txt");
+  
+  winText = loadStrings("winstate.txt");
+  loseText = loadStrings("failstate.txt");
   
   for (int i = 0; i < keyCount; i++) {
     activeImages[i] = loadImage("images/reactions/reaction" + i + ".png");
@@ -110,12 +126,12 @@ void draw() {
   }
   
   //hide?
-  fill(255,255,255,scoreA);
-  textAlign(CENTER);
-  textFont(font, 16);
-  text("+" + displayScore, scoreX, scoreY);
-  scoreY--;
-  scoreA-=20;
+  //fill(255,255,255,scoreA);
+  //textAlign(CENTER);
+  //textFont(font, 16);
+  //text("+" + displayScore, scoreX, scoreY);
+  //scoreY--;
+  //scoreA-=20;
   
   //version history
   fill(255);
@@ -130,28 +146,48 @@ void showStartScreen() {
   fill(255);
   textAlign(CENTER);
   textFont(font, 32);
-  text("GHOST GAME THING", width/2, height/2-30); //rename
+  text("REACTIONARY", width/2, height/2-130); //rename
+  textFont(font, 16);
+  text("You really like this person sooo much, and you think the feeling is mutual, \n" 
+  +"so you want to ask them out to the RENAISSANCE FAIR this weekend.\n"
+  +"Unfortunately, this morning you managed to spill juice all over your keyboard, "
+  +"and it's no longer working. \nIf you want to make your move, you'll have to " 
+  +"communicate via...\n\n"
+  +"REACTION IMAGES\n\n"
+  +"Good luck!", width/2, height/2-90);
+  
+  fill(255,255,255,opacity);
+  text("[ PRESS ANY KEY TO CONTINUE ]", width/2, height/2+200); //rename
 }
 
 void showEndScreen() {
   fill(255);
   textAlign(CENTER);
   textFont(font, 32);
-  text(score, width/2, height/2);
+  //text(score, width/2, height/2);
   
-  if (score < 2700) {
+  if (score < 100) {
     textFont(font, 16);
-    text("Bad", width/2, height/2+20);
-  } else if (score > 3600) {
-    textFont(font, 16);
-    text("Good", width/2, height/2+20);
+    for (int i = 0; i < loseText.length; i++) { 
+      text(loseText[i], width/2, 320 + 20*i); 
+    }
   } else {
     textFont(font, 16);
-    text("Average", width/2, height/2+20);
-  }
+    for (int i = 0; i < winText.length; i++) { 
+      text(winText[i], width/2, 320 + 20*i); 
+    }
+  } 
+  
+  fill(255,255,255,opacity);
+  text("[ PRESS Q TO RESTART ]", width/2, height/2+200); 
 }
 
 void play() {
+  fill(255,255,255,opacity);
+  textFont(font, 10);
+  textAlign(CENTER);
+  text("[ PRESS R TO CLEAR IMAGES ]", width/2, height/2+220); 
+  
   textAlign(CENTER);
   textFont(font, 18);
   fill(190, 185, 225);
@@ -175,36 +211,38 @@ void play() {
   fill(190, 185, 225);
   image(icon_ghost, text_leftMargin - 40, text_topMargin-30, 50, 50);
   
-  textFont(font, 16);
+  textFont(font, 18);
   
-  int[] values02 = {30,40,50,10,60,20}; int[] activeImages02 = {1,5,4,3,6,2};
+  // dummy images -> 2,3,24,26,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42
+  //int[] values01 = {30,40,50,10,60,20}; int[] activeImages01 = {1,1,1,1,1,1}; //1
+  int[] values02 = {30,40,50,10,60,20}; int[] activeImages02 = {1,1,1,1,1,1};
   int[] values03 = {20,40,10,30,50,60}; int[] activeImages03 = {1,5,4,3,6,2};
-  int[] values04 = {30,40,50,10,60,20}; int[] activeImages04 = {4,4,4,4,4,4}; //
-  int[] values05 = {20,40,10,30,50,60}; int[] activeImages05 = {5,5,5,5,5,5}; //
-  int[] values06 = {20,40,10,30,50,60}; int[] activeImages06 = {6,6,6,6,6,6}; //
-  int[] values07 = {20,40,10,30,50,60}; int[] activeImages07 = {7,7,7,7,7,7}; //
+  int[] values04 = {30,40,50,10,60,20}; int[] activeImages04 = {4,4,4,4,4,4}; //4
+  int[] values05 = {20,40,10,30,50,60}; int[] activeImages05 = {5,5,5,5,5,5}; //5
+  int[] values06 = {20,40,10,30,50,60}; int[] activeImages06 = {6,6,6,26,6,6}; //6
+  int[] values07 = {20,40,10,30,50,60}; int[] activeImages07 = {7,7,7,7,7,7}; //7
   int[] values08 = {20,40,10,30,50,60}; int[] activeImages08 = {1,5,4,3,6,2};
-  int[] values09 = {20,40,10,30,50,60}; int[] activeImages09 = {9,9,9,9,9,9}; //
-  int[] values10 = {30,40,50,10,60,20}; int[] activeImages10 = {1,5,4,3,6,2};
+  int[] values09 = {20,40,10,30,50,60}; int[] activeImages09 = {9,9,9,9,9,9}; //9
+  int[] values10 = {30,40,50,10,60,20}; int[] activeImages10 = {8,8,8,8,8,8}; //8
   int[] values11 = {20,40,10,30,50,60}; int[] activeImages11 = {1,5,4,3,6,2};
-  int[] values12 = {30,40,50,10,60,20}; int[] activeImages12 = {12,12,12,12,12,12}; //
-  int[] values13 = {20,40,10,30,50,60}; int[] activeImages13 = {1,5,4,3,6,2};
-  int[] values14 = {20,40,10,30,50,60}; int[] activeImages14 = {14,14,14,14,14,14}; //
-  int[] values15 = {20,40,10,30,50,60}; int[] activeImages15 = {1,5,4,3,6,2};
-  int[] values16 = {20,40,10,30,50,60}; int[] activeImages16 = {1,5,4,3,6,2};
-  int[] values17 = {20,40,10,30,50,60}; int[] activeImages17 = {1,5,4,3,6,2};
+  int[] values12 = {30,40,50,10,60,20}; int[] activeImages12 = {43,11,12,12,12,12}; //43,11,12
+  int[] values13 = {20,40,10,30,50,60}; int[] activeImages13 = {10,13,13,13,13,13}; //10,13
+  int[] values14 = {20,40,10,30,50,60}; int[] activeImages14 = {14,14,14,14,14,14}; //14
+  int[] values15 = {20,40,10,30,50,60}; int[] activeImages15 = {15,15,15,15,15,15}; //15
+  int[] values16 = {20,40,10,30,50,60}; int[] activeImages16 = {16,16,16,16,16,16}; //16
+  int[] values17 = {20,40,10,30,50,60}; int[] activeImages17 = {17,18,19,20,21,17}; //17,18,19,20,21
   int[] values18 = {20,40,10,30,50,60}; int[] activeImages18 = {1,5,4,3,6,2};
-  int[] values19 = {20,40,10,30,50,60}; int[] activeImages19 = {1,5,4,3,6,2};
-  int[] values20 = {20,40,10,30,50,60}; int[] activeImages20 = {1,5,4,3,6,2};
-  int[] values21 = {20,40,10,30,50,60}; int[] activeImages21 = {1,5,4,3,6,2};
-  int[] values22 = {30,40,50,10,60,20}; int[] activeImages22 = {1,5,4,3,6,2};
+  int[] values19 = {20,40,10,30,50,60}; int[] activeImages19 = {23,5,4,3,6,2};
+  int[] values20 = {20,40,10,30,50,60}; int[] activeImages20 = {23,23,23,23,23,23}; //23
+  int[] values21 = {20,40,10,30,50,60}; int[] activeImages21 = {22,22,22,22,22,22}; //22
+  int[] values22 = {30,40,50,10,60,20}; int[] activeImages22 = {27,27,27,27,27,27}; //27
   int[] values23 = {20,40,10,30,50,60}; int[] activeImages23 = {1,5,4,3,6,2};
   int[] values24 = {20,40,10,30,50,60}; int[] activeImages24 = {1,5,4,3,6,2};
-  int[] values25 = {20,40,10,30,50,60}; int[] activeImages25 = {25,25,25,25,25,25}; //
+  int[] values25 = {20,40,10,30,50,60}; int[] activeImages25 = {25,25,25,25,25,25}; //25
   int[] values26 = {20,40,10,30,50,60}; int[] activeImages26 = {1,5,4,3,6,2};
-  int[] values27 = {20,40,10,30,50,60}; int[] activeImages27 = {1,5,4,3,6,2};
+  int[] values27 = {20,40,10,30,50,60}; int[] activeImages27 = {1,5,4,24,6,2};
   int[] values28 = {20,40,10,30,50,60}; int[] activeImages28 = {1,5,4,3,6,2};
-  int[] values29 = {20,40,10,30,50,60}; int[] activeImages29 = {1,5,4,3,6,2};
+  int[] values29 = {20,40,10,30,50,60}; int[] activeImages29 = {1,26,4,3,6,2};
   int[] values30 = {20,40,10,30,50,60}; int[] activeImages30 = {1,5,4,3,6,2};
   
   switch(currentConvo) {
@@ -364,6 +402,8 @@ void mousePressed() {
       isSelected = true;
       keys[i].selectID = counter;
       tempScore += keys[i].value;
+      select.play();
+      select.rewind( );
     }
   }
 }
@@ -381,15 +421,19 @@ void keyPressed() {
         for (int i = 0; i < keyCount; i++) {
           keys[i].selectID = 0;
         }
+        cancel.play();
+        cancel.rewind( );
       }
-      if (key == ENTER && isSelected) {
+      if (key == ENTER) { //&& isSelected TODO
         //submit score for the round
         score += tempScore;
+        submit.play();
+        submit.rewind();
         
         //hide?
-        displayScore = tempScore;
-        scoreA = 255;
-        scoreY = height/2;
+        //displayScore = tempScore;
+        //scoreA = 255;
+        //scoreY = height/2;
         
         //clear board
         counter = 0;
@@ -409,6 +453,11 @@ void keyPressed() {
           currentConvo = 1;
           state = endScreen;
         }
+      }
+    case endScreen:
+      if (key == 'q') {
+        state = startScreen;
+        break;
       }
   }
 }

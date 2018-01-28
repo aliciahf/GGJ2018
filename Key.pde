@@ -39,7 +39,7 @@ class Key {
     textAlign(CENTER);
     textFont(font, 16);
     text(value, posX, posY); //hide
-    text(selectID, posX, posY+16); //hide
+    //text(selectID, posX, posY+16); //hide
   }
   
   void detect(float playerX, float playerY) {
