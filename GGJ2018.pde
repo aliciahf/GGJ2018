@@ -17,18 +17,24 @@ int convoTotal = 30;
 int[] reply;
 Key[] keys;
 int keyCount = 6;
-int[] values = {10, 20, 30, 40, 50, 60, 70};
-int[] keyIDs = {1, 2, 3, 4, 5, 6};
+int[] values = {10, 20, 30, 40, 50, 60, 70}; 
+int[] keyIDs = {1, 2, 3, 4, 5, 6}; //init
 int counter = 0, score = 0, tempScore = 0;
+boolean isSelected = false;
 
 final int startScreen = 0, play = 1, endScreen = 2;
 int state = startScreen;
+
+int scoreA = 0;
+int scoreX, scoreY, displayScore;
 
 void setup() {
   fullScreen();
   noCursor();
   smooth();
   background(236, 156, 200);
+  scoreX = width/2;
+  scoreY = width/2;
   
   font = createFont("PTM75F.ttf", 32);
   icon_ghost = loadImage("images/icon_cat.png");
@@ -103,6 +109,14 @@ void draw() {
       break;
   }
   
+  //hide?
+  fill(255,255,255,scoreA);
+  textAlign(CENTER);
+  textFont(font, 16);
+  text("+" + displayScore, scoreX, scoreY);
+  scoreY--;
+  scoreA-=20;
+  
   //version history
   fill(255);
   textAlign(RIGHT);
@@ -165,17 +179,17 @@ void play() {
   
   int[] values02 = {30,40,50,10,60,20}; int[] activeImages02 = {1,5,4,3,6,2};
   int[] values03 = {20,40,10,30,50,60}; int[] activeImages03 = {1,5,4,3,6,2};
-  int[] values04 = {30,40,50,10,60,20}; int[] activeImages04 = {1,5,4,3,6,2};
-  int[] values05 = {20,40,10,30,50,60}; int[] activeImages05 = {1,5,4,3,6,2};
-  int[] values06 = {20,40,10,30,50,60}; int[] activeImages06 = {1,5,4,3,6,2};
-  int[] values07 = {20,40,10,30,50,60}; int[] activeImages07 = {1,5,4,3,6,2};
+  int[] values04 = {30,40,50,10,60,20}; int[] activeImages04 = {4,4,4,4,4,4}; //
+  int[] values05 = {20,40,10,30,50,60}; int[] activeImages05 = {5,5,5,5,5,5}; //
+  int[] values06 = {20,40,10,30,50,60}; int[] activeImages06 = {6,6,6,6,6,6}; //
+  int[] values07 = {20,40,10,30,50,60}; int[] activeImages07 = {7,7,7,7,7,7}; //
   int[] values08 = {20,40,10,30,50,60}; int[] activeImages08 = {1,5,4,3,6,2};
-  int[] values09 = {20,40,10,30,50,60}; int[] activeImages09 = {1,5,4,3,6,2};
+  int[] values09 = {20,40,10,30,50,60}; int[] activeImages09 = {9,9,9,9,9,9}; //
   int[] values10 = {30,40,50,10,60,20}; int[] activeImages10 = {1,5,4,3,6,2};
   int[] values11 = {20,40,10,30,50,60}; int[] activeImages11 = {1,5,4,3,6,2};
-  int[] values12 = {30,40,50,10,60,20}; int[] activeImages12 = {1,5,4,3,6,2};
+  int[] values12 = {30,40,50,10,60,20}; int[] activeImages12 = {12,12,12,12,12,12}; //
   int[] values13 = {20,40,10,30,50,60}; int[] activeImages13 = {1,5,4,3,6,2};
-  int[] values14 = {20,40,10,30,50,60}; int[] activeImages14 = {1,5,4,3,6,2};
+  int[] values14 = {20,40,10,30,50,60}; int[] activeImages14 = {14,14,14,14,14,14}; //
   int[] values15 = {20,40,10,30,50,60}; int[] activeImages15 = {1,5,4,3,6,2};
   int[] values16 = {20,40,10,30,50,60}; int[] activeImages16 = {1,5,4,3,6,2};
   int[] values17 = {20,40,10,30,50,60}; int[] activeImages17 = {1,5,4,3,6,2};
@@ -186,7 +200,7 @@ void play() {
   int[] values22 = {30,40,50,10,60,20}; int[] activeImages22 = {1,5,4,3,6,2};
   int[] values23 = {20,40,10,30,50,60}; int[] activeImages23 = {1,5,4,3,6,2};
   int[] values24 = {20,40,10,30,50,60}; int[] activeImages24 = {1,5,4,3,6,2};
-  int[] values25 = {20,40,10,30,50,60}; int[] activeImages25 = {1,5,4,3,6,2};
+  int[] values25 = {20,40,10,30,50,60}; int[] activeImages25 = {25,25,25,25,25,25}; //
   int[] values26 = {20,40,10,30,50,60}; int[] activeImages26 = {1,5,4,3,6,2};
   int[] values27 = {20,40,10,30,50,60}; int[] activeImages27 = {1,5,4,3,6,2};
   int[] values28 = {20,40,10,30,50,60}; int[] activeImages28 = {1,5,4,3,6,2};
@@ -330,11 +344,11 @@ void play() {
   rectMode(CENTER);
   for (int i=0; i < keys.length; i++) {
     if (keys[i].selectID == 1) {
-      image(keys[i].image, width/4+180/2+40,height/2+120,180,180);
+      image(keys[i].image, width/4+200/2+40, height/2+125, 200, 200);
     } else if (keys[i].selectID == 2) {
-      image(keys[i].image, width/2,height/2+120,180,180);
+      image(keys[i].image, width/2, height/2+125, 200, 200);
     } else if (keys[i].selectID == 3) {
-      image(keys[i].image, width*3/4-180/2-40,height/2+120,180,180);
+      image(keys[i].image, width*3/4-200/2-40, height/2+125, 200, 200);
     }
   }
   
@@ -347,6 +361,7 @@ void mousePressed() {
   for (int i = 0; i < keyCount; i++) {
     if (keys[i].isInRange() && counter<3 && keys[i].selectID==0) {
       counter++;
+      isSelected = true;
       keys[i].selectID = counter;
       tempScore += keys[i].value;
     }
@@ -367,13 +382,19 @@ void keyPressed() {
           keys[i].selectID = 0;
         }
       }
-      if (key == ENTER) {
+      if (key == ENTER && isSelected) {
         //submit score for the round
         score += tempScore;
+        
+        //hide?
+        displayScore = tempScore;
+        scoreA = 255;
+        scoreY = height/2;
         
         //clear board
         counter = 0;
         tempScore = 0;
+        isSelected = false;
         for (int i = 0; i < keyCount; i++) {
           keys[i].selectID = 0;
         }
@@ -381,6 +402,9 @@ void keyPressed() {
         //conversation progression
         if (currentConvo < convoTotal) {
           currentConvo++;
+          if (currentConvo==8) {
+            currentConvo = 9;
+          }
         } else {
           currentConvo = 1;
           state = endScreen;
